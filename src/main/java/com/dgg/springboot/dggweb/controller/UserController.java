@@ -90,4 +90,27 @@ public class UserController {
 
 	}
 
+
+	@ApiOperation(value = "批量插入用户",notes = "验证mybatis批量插入带有下划线数值,旨在验证批量操作")
+	@PostMapping("/insertUserBatch")
+	public ResultUtil insertUserBatch(@RequestBody UserDto userDto){
+		int count = userService.insertUserBatch(UserDto.dto2entity(userDto));
+		if(count <= 0){
+			return ResultUtil.failed();
+		}else{
+			return  ResultUtil.success();
+		}
+	}
+
+	@ApiOperation(value = "批量更新用户",notes = "验证mybatis批量更新带有下划线数值,旨在验证批量操作")
+	@PostMapping("/updateUserBatch")
+	public ResultUtil updateUserBatch(@RequestBody UserDto userDto){
+		int count = userService.updateUserBatch(UserDto.dto2entity(userDto));
+		if(count <= 0){
+			return ResultUtil.failed();
+		}else{
+			return  ResultUtil.success();
+		}
+	}
+
 }

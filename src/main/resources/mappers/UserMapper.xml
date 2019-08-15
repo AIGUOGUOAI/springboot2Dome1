@@ -48,4 +48,38 @@
     </if>
   </select>
 
+  <insert id="insertUserBatch" >
+    insert into t_user
+    (user_name, phone, real_name, province_id, city_id, job_position, company_name, latest_login_time, create_time, update_time)
+    values
+    <foreach collection="userList" index="index" item="user" separator="," >
+      (
+      #{user.userName},
+      #{user.phone},
+      #{user.realName},
+      #{user.provinceId},
+      #{user.cityId},
+      #{user.jobPosition},
+      #{user.companyName},
+      #{user.latestLoginTime},
+      #{user.createTime},
+      #{user.updateTime}
+      )
+    </foreach>
+  </insert>
+
+  <update id="updateUserBatch" parameterType="java.util.List">
+   <foreach collection="userList" item="user" index="index" separator=";" >
+     update t_user
+     <trim prefix="set" suffixOverrides=",">
+       <if test="user.realName != null">real_name = #{user.realName},</if>
+       <if test="user.companyName != null">company_name = #{user.companyName},</if>
+       <if test="user.jobPosition != null">job_position = #{user.jobPosition},</if>
+     </trim>
+     <where>
+       user_id = #{user.userId}
+     </where>
+   </foreach>
+  </update>
+
 </mapper>

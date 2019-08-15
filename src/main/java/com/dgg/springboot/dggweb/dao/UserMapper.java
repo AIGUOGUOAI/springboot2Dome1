@@ -10,4 +10,8 @@ public interface UserMapper extends BaseMapper<User> {
 	List<User> selectUser(@Param("entity") User user);
 
 	List<User> selectUserByContent(@Param("content") String content);
+
+	int insertUserBatch(@Param("userList") List<User> userList);
+
+	int updateUserBatch(@Param("userList") List<User> userList);
 }

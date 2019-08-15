@@ -17,4 +17,8 @@ public interface IUserService {
 	Integer deleteUser(Integer userId);
 
 	Integer updateUser(User user);
+
+	int insertUserBatch(User entity);
+
+	int updateUserBatch(User entity);
 }

@@ -7,11 +7,13 @@ import com.dgg.springboot.dggweb.utils.PageData;
 import com.dgg.springboot.dggweb.utils.RedisUtil;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -37,6 +39,7 @@ public class UserServiceImpl implements IUserService {
 		user.setLatestLoginTime(date);
 		user.setCreateTime(date);
 		user.setUpdateTime(date);
+
 		return userDao.insert(user);
 	}
 
@@ -88,5 +91,55 @@ public class UserServiceImpl implements IUserService {
 	@Override
 	public Integer updateUser(User user) {
 		return userDao.updateByPrimaryKeySelective(user);//updateByPrimaryKeySelective 不会覆盖没有设置属性的值；updateByPrimaryKey会覆盖没有设置属性的值为 null
+	}
+
+
+	@Override
+	public int insertUserBatch(User entity) {
+//		List<User> userList = Collections.emptyList();
+		List<User> userList = new ArrayList<>();
+		String realName = entity.getRealName();
+		String companyName = entity.getCompanyName();
+		String jobPosition = entity.getJobPosition();
+		String userName = entity.getUserName();
+		String phone = entity.getPhone();
+
+		for(int i = 0;i<10;i++){
+			User userInsr = new User();
+			userInsr.setPhone(phone);
+			userInsr.setProvinceId(i);
+			userInsr.setCityId(i);
+			userInsr.setUserName(userName+"_克隆_"+i);
+			userInsr.setRealName(realName+"_克隆_"+i);
+			userInsr.setCompanyName(companyName+"_克隆_"+i);
+			userInsr.setJobPosition(jobPosition+"_克隆_"+i);
+			LocalDateTime date = LocalDateTime.now();
+			userInsr.setLatestLoginTime(date);
+			userInsr.setCreateTime(date);
+			userInsr.setUpdateTime(date);
+			userList.add(userInsr);
+		}
+		return userDao.insertUserBatch(userList);
+	}
+
+	@Override
+	public int updateUserBatch(User entity) {
+		List<User> userList = new ArrayList<>();
+		for(int i = 7;i<17;i++){
+			User userInsr = new User();
+			userInsr.setUserName(entity.getUserName()+"_更新_克隆_"+i);
+			userInsr.setRealName(entity.getRealName()+"_更新_克隆_"+i);
+			userInsr.setCompanyName(entity.getCompanyName()+"_更新_克隆_"+i);
+			userInsr.setJobPosition(entity.getJobPosition()+"_更新_克隆_"+i);
+//			userInsr.setUserName(entity.getUserName()+i);
+//			userInsr.setRealName(entity.getRealName()+i);
+//			userInsr.setCompanyName(entity.getCompanyName()+i);
+//			userInsr.setJobPosition(entity.getJobPosition()+i);
+			LocalDateTime date = LocalDateTime.now();
+			userInsr.setUpdateTime(date);
+			userInsr.setUserId(i);
+			userList.add(userInsr);
+		}
+		return userDao.updateUserBatch(userList);
 	}
 }
