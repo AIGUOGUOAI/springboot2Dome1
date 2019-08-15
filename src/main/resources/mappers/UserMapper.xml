@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dgg.springboot.dggweb.dao.UserMapper">
+  <resultMap id="BaseResultMap" type="com.dgg.springboot.dggweb.entity.User">
+    <id column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="user_name" jdbcType="VARCHAR" property="userName" />
+    <result column="phone" jdbcType="VARCHAR" property="phone" />
+    <result column="real_name" jdbcType="VARCHAR" property="realName" />
+    <result column="province_id" jdbcType="INTEGER" property="provinceId" />
+    <result column="city_id" jdbcType="INTEGER" property="cityId" />
+    <result column="job_position" jdbcType="VARCHAR" property="jobPosition" />
+    <result column="company_name" jdbcType="VARCHAR" property="companyName" />
+    <result column="latest_login_time" jdbcType="TIMESTAMP" property="latestLoginTime" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    user_id, user_name, phone, real_name, province_id, city_id, job_position, company_name, 
+    latest_login_time, create_time, update_time
+  </sql>
+  <select id="selectUser" parameterType="com.dgg.springboot.dggweb.entity.User" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_user
+    <where>
+      <if test="entity.userName != null and entity.userName.length &gt; 0">
+        user_name LOCATE(#{entity.userName},user_name)
+      </if>
+      <if test="entity.phone != null and entity.phone.length &gt; 0">
+        and phone LOCATE(#{entity.phone},phone)
+      </if>
+      <if test="entity.realName != null and entity.realName.length &gt; 0">
+        and real_name LOCATE(#{entity.realName},real_name)
+      </if>
+    </where>
+  </select>
+
+  <select id="selectUserByContent" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from t_user
+    <if test="content != null and content != '' ">
+      <where>
+            LOCATE(#{content},user_name)
+        or  LOCATE(#{content},real_name)
+        or  LOCATE(#{content},phone)
+      </where>
+    </if>
+  </select>
+
+</mapper>
